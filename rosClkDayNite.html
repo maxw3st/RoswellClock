@@ -1,0 +1,390 @@
+<!doctype html>  
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --> 
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<meta http-equiv="imagetoolbar" content="no" />
+<![endif]-->
+<head>
+<!-- http://tympanus.net/codrops/2014/11/11/drag-and-drop-interaction-ideas/ -->
+<meta charset="utf-8">
+<title>Roswell Rock Clock: Day—Night version</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>// MS fix for IE Mobile 10
+if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+    var msViewportStyle = document.createElement("style");
+    msViewportStyle.appendChild(
+        document.createTextNode(
+            "@-ms-viewport{width:auto!important}"
+        )
+    );
+    document.getElementsByTagName("head")[0].
+        appendChild(msViewportStyle);
+}
+
+</script>
+<!--[if lt IE 9]><script src="html5shiv/dist/html5shiv.js"></script><![endif]-->
+<style>
+body {
+	text-align: center;
+	background: rgb( 25, 11, 1 );
+		
+}
+
+#upper {
+	text-align: center;		
+	font-size: 1.5em;
+}
+
+#clock1 {
+	text-align: center;	
+	margin: auto;
+	margin-top: 4em;		
+	width: 388px;
+	height: 388px;
+}
+
+#clock2 {
+	text-align: center;	
+	margin: auto;
+	margin-top: 4em;		
+	width: 388px;
+	height: 388px;
+}
+
+#outer-circ {
+	background: url( images/bANDw/outerCircle.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	width: 388px;
+	height: 388px;
+}
+
+#outer-circ-nite {
+	background: url( images/bANDw/outerCircleBlack.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	width: 388px;
+	height: 388px;
+}
+
+#hrs-day {
+	background-image: url( images/bANDw/hoursDkGray.png ); // 264 x 318
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 9%;
+	margin-left: 15.8%;
+	width: 264px;
+	height: 318px;
+	
+}
+
+#hrs-nite {
+	background-image: url( images/bANDw/hoursOnly.png ); // 264 x 318
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 9%;
+	margin-left: 15.8%;
+	width: 264px;
+	height: 318px;
+	
+}
+
+#mins-day {
+	background-image: url( images/bANDw/minutesDay.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 25.8%;
+	margin-left: 47%;
+	width: 180px;
+	height: 180px;	
+}
+
+#mins-nite {
+	background-image: url( images/bANDw/minutesNite.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 25.8%;
+	margin-left: 47%;
+	width: 180px;
+	height: 180px;	
+}
+
+#secs-day {
+	background-image: url( images/bANDw/secondsDay.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 26.5%;
+	margin-left: -15%;
+	width: 180px;
+	height: 180px;
+	transform: rotate( 12deg );
+}
+
+#secs-nite {
+	background-image: url( images/bANDw/secondsNite.png );
+	background-repeat: no-repeat;
+	position: absolute;	
+	margin: auto;
+	margin-top: 26.5%;
+	margin-left: -15%;
+	width: 180px;
+	height: 180px;
+	transform: rotate( 12deg );
+}
+
+#ctime {
+	font-size: 1.5em;
+	text-align: center;
+	
+	margin-top: 2em;	
+}
+
+.tree {
+	position: absolute;
+	z-index: 100;
+	margin-top: -18em;
+	width: 175px;
+	height: 251px;
+	margin-left: calc( 18% - 200px);
+	margin-right: auto;
+	text-align: center;
+}
+	
+.home {
+	position: absolute;
+	margin-left: 1em; 
+	margin-top: 1em;
+	font-size: 1.2em;
+			
+}
+
+a { 
+	color: rgb( 150, 150, 150 );
+}
+a:hover {
+	color: rgb( 100, 140, 198 );
+}
+
+a:active {
+	color: rgb( 122, 95, 69 );
+}
+
+li {
+	text-align: left;
+	line-height: 150%;
+}
+
+.nite {
+	visibility: visible;
+}
+</style>
+<script> 
+
+// set global variables & instantiate the timer function
+var sdegrees; 
+var mySeconds = setInterval( function(){ secondsTimer() }, 1000 );
+var mdegrees;
+var myMinutes = setInterval( function(){ minutesTimer() }, 1000);
+var hdegrees;
+var myHours = setInterval( function(){ hoursTimer() }, 1000 );
+
+var outer; // document.getElementByID( "id" ).style.display = "block" or display = "none"
+var secs;
+var mins;
+var hrs;
+var tod;
+
+// timer function sets angle by second in minute
+function secondsTimer(){
+	
+	var d = new Date(); // get the current time
+	var tos = d.getHours();
+	sdegrees = d.getSeconds()*6; // match the clock angle for seconds to the current time & on load/refresh	
+	
+	if( 5 < tos && tos < 18 ) {
+		secs = "secs-day";		
+	}
+	else {
+		secs = "secs-nite";				
+	}
+	
+	// display time prefixed for Chrome & Firefox
+	document.getElementById( secs ).style.Transform = "rotate(" + ( sdegrees - hdegrees ) + "deg)";  
+	document.getElementById( secs ).style.MozTransform = "rotate(" + ( sdegrees - hdegrees ) + "deg)";  
+	document.getElementById( secs ).style.WebkitTransform = "rotate(" + ( sdegrees - hdegrees ) + "deg)";
+	document.getElementById( secs ).style.msTransform = "rotate(" + ( sdegrees - hdegrees ) + "deg)";
+	document.getElementById( secs ).style.OTransform = "rotate(" + ( sdegrees - hdegrees ) + "deg)";
+	  
+	document.getElementById( "ctime" ).innerHTML = d.toLocaleTimeString();
+	
+} // end function secondsTimer
+
+// timer function sets angle by minute
+function minutesTimer(){
+	
+	var d = new Date();
+	var tom = d.getHours();
+	
+	mdegrees = d.getMinutes()*6 - 1; // match the clock angle for minutes to the current time & on load/refresh
+	
+	if( 5 < tom && tom < 18 ) {
+		mins = "mins-day";			
+	}
+	else {
+		mins = "mins-nite";				
+	}
+	
+	// display time prefixed for Chrome & Firefox
+	document.getElementById( mins ).style.Transform = "rotate(" + ( mdegrees - hdegrees ) + "deg)";
+	document.getElementById( mins ).style.MozTransform = "rotate(" + ( mdegrees - hdegrees ) + "deg)"	
+	document.getElementById( mins ).style.WebkitTransform = "rotate(" + ( mdegrees - hdegrees ) + "deg)"; 
+	document.getElementById( mins ).style.msTransform = "rotate(" + ( mdegrees - hdegrees ) + "deg)";
+	document.getElementById( mins ).style.OTransform = "rotate(" + ( mdegrees - hdegrees ) + "deg)";	
+	
+} // end function minutesTimer
+
+// timer function sets angle by hour: using a 24 hour clock
+function hoursTimer(){	
+	
+	var d = new Date();
+	var toh = d.getHours();
+	var links = document.getElementsByTagName( "a" );
+	
+	hdegrees = ( d.getHours()*30 ); // match the clock angle to current hour & on load/refresh
+	
+	if( 5 < toh && toh < 18 ) {
+	
+		hrs = "hrs-day";
+		refreshMe();
+	}
+	else {
+		hrs = "hrs-nite";
+		refreshMe();
+	}
+	// display time unprefixed and prefixed for Chrome & Firefox
+	document.getElementById( hrs ).style.Transform = "rotate(" + hdegrees + "deg)";
+	document.getElementById( hrs ).style.MozTransform = "rotate(" + hdegrees + "deg)";
+	document.getElementById( hrs ).style.WebkitTransform = "rotate(" + hdegrees + "deg)";
+	document.getElementById( hrs ).style.msTransform = "rotate(" + hdegrees + "deg)";
+	document.getElementById( hrs ).style.OTransform = "rotate(" + hdegrees + "deg)";		
+	
+	//document.getElementById( "ctime" ).innerHTML = d.toLocaleTimeString(); // comment out this line if you don't want to see the text
+} // end function hoursTimer
+
+function refreshMe() {
+	
+	var d = new Date();
+	var tor = d.getHours();
+	var tas = d.getSeconds();
+	var tam = d.getMinutes();
+	if( ( tor === 6 || tor === 18 ) && tas === 0 && tam === 0 ) 
+		window.location.reload( true );	
+
+	//alert( tor );
+}
+
+</script>
+</head>
+<body>
+
+<div id = "upper">
+   <p id = "upr">Day/Night Roswell Rock Clock</p>
+</div>
+
+<div class="home">
+	<ul>
+		<li><a href = "http://maxw3st.us/">Home</a></li>
+		<li><a href = "../steckerClock/ssteckerClock.html">Abstract 24 Hour Clock</a></li>
+		<li><a href = "../steckerClock/smMedLgClocks.html">Abstract Clocks</a></li>
+		<li><a href = "../roswellClk/roswellClk.html">Roswell Rock Clock</a></li>
+		<li><a href = "../tradingClock/tradingClock.html">FX Trading Clock</a></li>
+		
+	</ul>
+</div>
+
+<div id = "clock1">
+	<div id = "outer-circ">		
+		<div id = "hrs-day">
+			<div id = "mins-day"></div>
+			<div id = "secs-day"></div>
+		</div>		
+	</div>
+</div>
+<div id = "clock2">
+	<div id = "outer-circ-nite">	
+		<div id = "hrs-nite">
+			<div id = "mins-nite"></div>
+			<div id = "secs-nite"></div>
+		</div>
+	</div>
+</div>
+
+<div id = "ctime">
+</div>
+
+<script>
+var d = new Date(); // get the current time	
+var tod = d.getHours();
+
+(function doitNow() {
+	if ( 5 < tod && tod < 18 ) {		
+		
+		document.getElementById( "clock2" ).style.display = "none";	
+		document.getElementById( "clock1" ).style.display = "";	
+		document.getElementById( "ctime" ).style.color = "rgb( 200, 200, 200 )";
+		document.getElementById( "upr" ).style.color = "rgb( 200, 200, 200 )";	
+	}
+	else {
+	
+		document.getElementById( "clock1" ).style.display = "none";
+		document.getElementById( "clock2" ).style.display = "";	
+		document.getElementById( "ctime" ).style.color = "rgb( 150, 150, 150 )";
+		document.getElementById( "upr" ).style.color = "rgb( 150, 150, 150 )";
+	}	
+
+})() //run doitNow()
+
+/*function changeColor() {
+
+	var links = document.getElementsByTagName( "a" );
+	var d = new Date(); // get the current time	
+	var toc = d.getHours();
+	
+	if( 6 > toc || toc > 18 ) {
+		
+		for( var i = 0; i < document.links.length; i++ ) {
+			if( links[ i ].href ) {
+			
+				links[ i ].style.color = "rgb( 150, 150, 150 )";
+			}
+		}
+		
+	} else {
+		
+		for( var i = 0; i < document.links.length; i++ ) {
+			if( links[ i ].href ) {
+			
+				links[ i ].style.color = "rgb( 200, 200, 200 )";
+			}
+		}
+	}
+} 
+changeColor();	*/
+</script> 
+<!-- <div class = "tree">
+	<img src="images/xmascard2.gif" width = "350" height = "502" title = "Here's a Christmas Gif, just for you!" alt="Here's a Christmas Gif, just for you!" />
+</div> -->
+<!-- ©2014 jsDesign @maxw3st -->
+</body>
